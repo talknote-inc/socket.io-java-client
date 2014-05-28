@@ -190,7 +190,8 @@ public class SocketIO {
 	}
 
     private boolean setAndConnect(URL url, IOCallback callback) {
-        return setAndConnect(url, url.getQuery(), callback);
+        String query = url != null ? url.getQuery() : null;
+        return setAndConnect(url, query, callback);
     }
 
     /**
