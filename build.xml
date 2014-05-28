@@ -97,7 +97,6 @@
 	<target name="jar" depends="build-project">
 	        <mkdir dir="jar"/>
 	        <jar destfile="jar/socketio.jar" basedir="bin">
-		    <zipgroupfileset dir="libs/" includes="*.jar"/>
 	            <manifest>
 	            </manifest>
 	        </jar>

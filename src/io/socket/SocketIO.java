@@ -189,7 +189,11 @@ public class SocketIO {
 		}
 	}
 
-	/**
+    private boolean setAndConnect(URL url, IOCallback callback) {
+        return setAndConnect(url, url.getQuery(), callback);
+    }
+
+    /**
 	 * Sets url and callback and initiates connecting if both are present
 	 * 
 	 * @param url
@@ -198,7 +202,7 @@ public class SocketIO {
 	 *            the callback
 	 * @return true if connecting has been initiated, false if not
 	 */
-	private boolean setAndConnect(URL url, IOCallback callback) {
+	private boolean setAndConnect(URL url, String query, IOCallback callback) {
 		if(this.connection != null)
 			throw new RuntimeException("You can connect your SocketIO instance only once. Use a fresh instance instead.");
 		if ((this.url != null && url != null)
@@ -217,7 +221,7 @@ public class SocketIO {
 			if (this.namespace.equals("/")) {
 				this.namespace = "";
 			}
-			this.connection = IOConnection.register(origin, this);
+			this.connection = IOConnection.register(origin, query, this);
 			return true;
 		}
 		return false;

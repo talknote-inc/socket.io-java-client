@@ -75,6 +75,8 @@ class IOConnection implements IOCallback {
 	/** The url for this connection. */
 	private URL url;
 
+    private String queryStr;
+
 	/** The transport for this connection. */
 	private IOTransport transport;
 
@@ -220,6 +222,10 @@ class IOConnection implements IOCallback {
 		return sslContext;
 	}
 
+    static public IOConnection register(String origin, SocketIO socket) {
+        return register(origin, null, socket);
+    }
+
 	/**
 	 * Creates a new connection or returns the corresponding one.
 	 * 
@@ -229,7 +235,7 @@ class IOConnection implements IOCallback {
 	 *            the socket
 	 * @return a IOConnection object
 	 */
-	static public IOConnection register(String origin, SocketIO socket) {
+	static public IOConnection register(String origin, String queryStr, SocketIO socket) {
 		List<IOConnection> list = connections.get(origin);
 		if (list == null) {
 			list = new LinkedList<IOConnection>();
@@ -243,7 +249,7 @@ class IOConnection implements IOCallback {
 			}
 		}
 
-		IOConnection connection = new IOConnection(origin, socket);
+		IOConnection connection = new IOConnection(origin, queryStr, socket);
 		list.add(connection);
 		return connection;
 	}
@@ -295,7 +301,13 @@ class IOConnection implements IOCallback {
 		URLConnection connection;
 		try {
 			setState(STATE_HANDSHAKE);
-			url = new URL(IOConnection.this.url.toString() + SOCKET_IO_1);
+
+            if( queryStr != null ) {
+                url = new URL(IOConnection.this.url.toString() + SOCKET_IO_1 + "?" + queryStr );
+            } else {
+                url = new URL(IOConnection.this.url.toString() + SOCKET_IO_1);
+            }
+
 			connection = url.openConnection();
 			if (connection instanceof HttpsURLConnection) {
 				((HttpsURLConnection) connection)
@@ -395,6 +407,10 @@ class IOConnection implements IOCallback {
 		}
 	}
 
+    private IOConnection(String url,SocketIO socket) {
+        this( url, null, socket );
+    }
+
 	/**
 	 * Instantiates a new IOConnection.
 	 * 
@@ -403,9 +419,10 @@ class IOConnection implements IOCallback {
 	 * @param socket
 	 *            the socket
 	 */
-	private IOConnection(String url, SocketIO socket) {
+	private IOConnection(String url, String query, SocketIO socket) {
 		try {
 			this.url = new URL(url);
+            this.queryStr = query;
 			this.urlStr = url;
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);

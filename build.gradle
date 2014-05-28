@@ -1,0 +1,10 @@
+buildscript {
+    repositories {
+    }
+
+    dependencies {
+    }
+}
+
+ant.importBuild 'build.xml'
+defaultTasks 'jar'
