@@ -141,10 +141,10 @@ class XhrTransport implements IOTransport {
 	 *            the connection
 	 * @return the iO transport
 	 */
-	public static IOTransport create(URL url, IOConnection connection) {
+	public static IOTransport create(URL url, String query, IOConnection connection) {
 		try {
 			URL xhrUrl = new URL(url.toString() + IOConnection.SOCKET_IO_1
-					+ TRANSPORT_NAME + "/" + connection.getSessionId());
+					+ TRANSPORT_NAME + "/" + connection.getSessionId() + "?" + query );
 			return new XhrTransport(xhrUrl, connection);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(

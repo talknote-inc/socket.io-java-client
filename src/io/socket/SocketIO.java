@@ -36,6 +36,8 @@ public class SocketIO {
 
 	private URL url;
 
+    private String query;
+
 	/**
 	 * Instantiates a new socket.io connection. The object connects after
 	 * calling {@link #connect(URL, IOCallback)} or
@@ -54,11 +56,15 @@ public class SocketIO {
 	 * @throws MalformedURLException
 	 *             the malformed url exception
 	 */
-	public SocketIO(final String url) throws MalformedURLException {
+	public SocketIO(final String url, String query) throws MalformedURLException {
 		if (url == null)
 			throw new RuntimeException("url may not be null.");
-		setAndConnect(new URL(url), null);
+		setAndConnect(new URL(url), query, null);
 	}
+
+    public SocketIO(final String url) throws MalformedURLException {
+        this(url, (String)null);
+    }
 
 	/**
 	 * Instantiates a new socket.io connection and sets the request headers used
@@ -123,7 +129,12 @@ public class SocketIO {
 	public SocketIO(final URL url) {
 		setAndConnect(url, null);
 	}
-	
+
+
+    public SocketIO(final URL url, final String query) {
+        setAndConnect(url, query, null);
+    }
+
 	/**
 	 * Set the socket factory used for SSL connections.
 	 * @param socketFactory
@@ -212,6 +223,11 @@ public class SocketIO {
 		if (url != null) {
 			this.url = url;
 		}
+
+        if (query != null) {
+            this.query = query;
+        }
+
 		if (callback != null) {
 			this.callback = callback;
 		}
@@ -222,7 +238,7 @@ public class SocketIO {
 			if (this.namespace.equals("/")) {
 				this.namespace = "";
 			}
-			this.connection = IOConnection.register(origin, query, this);
+			this.connection = IOConnection.register(origin, this.query, this);
 			return true;
 		}
 		return false;

@@ -1,3 +1,6 @@
+apply plugin: 'java'
+version = 2.0
+
 buildscript {
     repositories {
     }
@@ -6,5 +9,24 @@ buildscript {
     }
 }
 
-ant.importBuild 'build.xml'
+repositories {
+}
+
+dependencies {
+    compile fileTree('libs')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
 defaultTasks 'jar'
+
+compileJava.destinationDir = file('bin')
+
+jar.destinationDir = file("jar")
+jar.from file("bin")

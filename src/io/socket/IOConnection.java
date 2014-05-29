@@ -308,6 +308,8 @@ class IOConnection implements IOCallback {
                 url = new URL(IOConnection.this.url.toString() + SOCKET_IO_1);
             }
 
+            logger.info( "handshake url: " + url );
+
 			connection = url.openConnection();
 			if (connection instanceof HttpsURLConnection) {
 				((HttpsURLConnection) connection)
@@ -330,6 +332,8 @@ class IOConnection implements IOCallback {
 			heartbeatTimeout = Long.parseLong(data[1]) * 1000;
 			closingTimeout = Long.parseLong(data[2]) * 1000;
 			protocols = Arrays.asList(data[3].split(","));
+
+            logger.info( "handshake done: " + response );
 		} catch (Exception e) {
 			error(new SocketIOException("Error while handshaking", e));
 		}
@@ -343,14 +347,15 @@ class IOConnection implements IOCallback {
 			return;
 		setState(STATE_CONNECTING);
 		if (protocols.contains(WebsocketTransport.TRANSPORT_NAME))
-			transport = WebsocketTransport.create(url, this);
+			transport = WebsocketTransport.create(url, queryStr, this);
 		else if (protocols.contains(XhrTransport.TRANSPORT_NAME))
-			transport = XhrTransport.create(url, this);
+			transport = XhrTransport.create(url, queryStr, this);
 		else {
 			error(new SocketIOException(
 					"Server supports no available transports. You should reconfigure the server to support a available transport"));
 			return;
 		}
+        logger.info( "transport: " + transport.getName() + ", state: " + String.valueOf(getState()) );
 		transport.connect();
 	}
 
