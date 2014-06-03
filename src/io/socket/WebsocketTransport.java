@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.java_websocket.client.DefaultSSLWebSocketClientFactory;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -33,8 +32,14 @@ class WebsocketTransport extends WebSocketClient implements IOTransport {
         super(uri);
         this.connection = connection;
         SSLContext context = IOConnection.getSslContext();
+
         if("wss".equals(uri.getScheme()) && context != null) {
-	        this.setWebSocketFactory(new DefaultSSLWebSocketClientFactory(context));
+            SSLSocketFactory factory = context.getSocketFactory();
+            try {
+                this.setSocket( factory.createSocket() );
+            } catch (IOException e ) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

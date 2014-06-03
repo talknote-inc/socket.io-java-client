@@ -3,3 +3,4 @@ jar/
 build/
 *.iml
 .idea/*
+.gradle/

@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     compile 'org.json:json:20140107@jar'
-    compile fileTree(dir: 'libs', include: 'WebSocket.jar' )
+    compile fileTree(dir: 'libs', include: 'Java-WebSocket-1.3.1-SNAPSHOT.jar' )
 }
 
 sourceSets {
